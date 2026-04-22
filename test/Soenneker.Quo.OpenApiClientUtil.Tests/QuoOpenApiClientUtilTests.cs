@@ -1,20 +1,19 @@
 using Soenneker.Quo.OpenApiClientUtil.Abstract;
-using Soenneker.Tests.FixturedUnit;
-using Xunit;
+using Soenneker.Tests.HostedUnit;
 
 namespace Soenneker.Quo.OpenApiClientUtil.Tests;
 
-[Collection("Collection")]
-public sealed class QuoOpenApiClientUtilTests : FixturedUnitTest
+[ClassDataSource<Host>(Shared = SharedType.PerTestSession)]
+public sealed class QuoOpenApiClientUtilTests : HostedUnitTest
 {
     private readonly IQuoOpenApiClientUtil _openapiclientutil;
 
-    public QuoOpenApiClientUtilTests(Fixture fixture, ITestOutputHelper output) : base(fixture, output)
+    public QuoOpenApiClientUtilTests(Host host) : base(host)
     {
         _openapiclientutil = Resolve<IQuoOpenApiClientUtil>(true);
     }
 
-    [Fact]
+    [Test]
     public void Default()
     {
 
