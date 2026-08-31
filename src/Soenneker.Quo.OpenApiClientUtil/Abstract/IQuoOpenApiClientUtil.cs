@@ -1,20 +1,30 @@
 using Soenneker.Quo.OpenApiClient;
 using System;
-using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
 
 namespace Soenneker.Quo.OpenApiClientUtil.Abstract;
 
 /// <summary>
-/// A .NET thread-safe singleton HttpClient for 
+/// Provides a lazily initialized Quo API client.
 /// </summary>
-public interface IQuoOpenApiClientUtil: IDisposable, IAsyncDisposable
+public interface IQuoOpenApiClientUtil : IDisposable, IAsyncDisposable
 {
     /// <summary>
-    /// Gets the value.
+    /// Gets the shared client for this utility instance.
     /// </summary>
     /// <param name="cancellationToken">The cancellation token.</param>
     /// <returns>A task containing the result of the operation.</returns>
     ValueTask<QuoOpenApiClient> Get(CancellationToken cancellationToken = default);
+
+    /// <summary>
+    /// Releases resources used by the current instance.
+    /// </summary>
+    new void Dispose();
+
+    /// <summary>
+    /// Asynchronously releases resources used by the current instance.
+    /// </summary>
+    /// <returns>A task that represents the asynchronous operation.</returns>
+    new ValueTask DisposeAsync();
 }

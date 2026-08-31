@@ -2,17 +2,16 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Soenneker.Quo.HttpClients.Registrars;
 using Soenneker.Quo.OpenApiClientUtil.Abstract;
-using Soenneker.Utils.HttpClientCache.Registrar;
 
 namespace Soenneker.Quo.OpenApiClientUtil.Registrars;
 
 /// <summary>
-/// A .NET thread-safe singleton HttpClient for GitHub
+/// Registers the lazily initialized Quo API client.
 /// </summary>
 public static class QuoOpenApiClientUtilRegistrar
 {
     /// <summary>
-    /// Adds <see cref="QuoOpenApiClientUtil"/> as a singleton service. <para/>
+    /// Adds the Quo API client utility as a singleton service. <para/>
     /// </summary>
     public static IServiceCollection AddQuoOpenApiClientUtilAsSingleton(this IServiceCollection services)
     {
@@ -23,7 +22,7 @@ public static class QuoOpenApiClientUtilRegistrar
     }
 
     /// <summary>
-    /// Adds <see cref="QuoOpenApiClientUtil"/> as a scoped service. <para/>
+    /// Adds the Quo API client utility as a scoped service backed by the singleton HTTP client provider. <para/>
     /// </summary>
     public static IServiceCollection AddQuoOpenApiClientUtilAsScoped(this IServiceCollection services)
     {

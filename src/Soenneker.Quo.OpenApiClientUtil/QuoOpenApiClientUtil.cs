@@ -2,31 +2,30 @@ using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Kiota.Abstractions.Authentication;
 using Microsoft.Kiota.Http.HttpClientLibrary;
-using Soenneker.Extensions.Configuration;
 using Soenneker.Extensions.ValueTask;
 using Soenneker.Quo.OpenApiClientUtil.Abstract;
-using Soenneker.Kiota.GenericAuthenticationProvider;
 using Soenneker.Quo.HttpClients.Abstract;
 using Soenneker.Quo.OpenApiClient;
 using Soenneker.Utils.AsyncSingleton;
 
 namespace Soenneker.Quo.OpenApiClientUtil;
 
-///<inheritdoc cref="IQuoOpenApiClientUtil"/>
 public sealed class QuoOpenApiClientUtil : IQuoOpenApiClientUtil
 {
     private readonly AsyncSingleton<QuoOpenApiClient> _client;
 
-    public QuoOpenApiClientUtil(IQuoOpenApiHttpClient httpClientUtil, IConfiguration configuration)
+    public QuoOpenApiClientUtil(IQuoOpenApiHttpClient httpClientUtil, IConfiguration _)
     {
         _client = new AsyncSingleton<QuoOpenApiClient>(async token =>
         {
             HttpClient httpClient = await httpClientUtil.Get(token).NoSync();
 
-            var apiKey = configuration.GetValueStrict<string>("Quo:ApiKey");
-
-            var requestAdapter = new HttpClientRequestAdapter(new GenericAuthenticationProvider(headerValue: apiKey), httpClient: httpClient);
+            var requestAdapter = new HttpClientRequestAdapter(new AnonymousAuthenticationProvider(), httpClient: httpClient)
+            {
+                BaseUrl = httpClient.BaseAddress!.ToString().TrimEnd('/')
+            };
 
             return new QuoOpenApiClient(requestAdapter);
         });
@@ -37,18 +36,11 @@ public sealed class QuoOpenApiClientUtil : IQuoOpenApiClientUtil
         return _client.Get(cancellationToken);
     }
 
-    /// <summary>
-    /// Releases resources used by the current instance.
-    /// </summary>
     public void Dispose()
     {
         _client.Dispose();
     }
 
-    /// <summary>
-    /// Asynchronously releases resources used by the current instance.
-    /// </summary>
-    /// <returns>A task that represents the asynchronous operation.</returns>
     public ValueTask DisposeAsync()
     {
         return _client.DisposeAsync();
