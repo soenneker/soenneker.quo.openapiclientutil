@@ -12,6 +12,7 @@ using Soenneker.Utils.AsyncSingleton;
 
 namespace Soenneker.Quo.OpenApiClientUtil;
 
+/// <inheritdoc cref="IQuoOpenApiClientUtil" />
 public sealed class QuoOpenApiClientUtil : IQuoOpenApiClientUtil
 {
     private readonly AsyncSingleton<QuoOpenApiClient> _client;
